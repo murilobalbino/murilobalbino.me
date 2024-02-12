@@ -1,27 +1,32 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model Stack {
-    id    String @id @default(cuid())
-    name  String
-    href  String
-    techs Tech[]
+  id    String @id @default(cuid())
+  name  String
+  href  String
+  techs Tech[]
 }
 
 model Tech {
-    id   String @id @default(cuid())
-    name String
-    key  String
+  id      String @id @default(cuid())
+  name    String
+  key     String
+  stackId String
+  stacks  Stack  @relation(fields: [stackId], references: [id])
+}
 
-    stacks  Stack  @relation(fields: [stackId], references: [id])
-    stackId String
+model GuestMessage {
+  id        String   @id @default(cuid())
+  github    String   @unique
+  message   String
+  createdAt DateTime @default(now())
+
+  @@map("guest_messages")
 }

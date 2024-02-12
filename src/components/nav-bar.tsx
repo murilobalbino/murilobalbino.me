@@ -51,7 +51,6 @@ export default function NavBar() {
                     icon: MessageSquare,
                     text: 'Livro de Visitas',
                     href: '/guest-book',
-                    disabled: true,
                 },
                 {
                     icon: Newspaper,
