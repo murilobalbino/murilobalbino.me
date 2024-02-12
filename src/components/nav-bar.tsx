@@ -91,6 +91,7 @@ export default function NavBar() {
     const router = useRouter()
     const [menu, setMenu] = useState(false)
     const handleLink = (href: string) => {
+        if (href.includes('http')) return window.open(href, '_blank')
         if (menu) setMenu(false)
         router.push(href)
     }
