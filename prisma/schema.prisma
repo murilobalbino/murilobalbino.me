@@ -1,32 +1,36 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model Stack {
-  id    String @id @default(cuid())
-  name  String
-  href  String
-  techs Tech[]
+    id    String @id @default(cuid())
+    name  String
+    href  String
+    techs Tech[]
+
+    @@map("stacks")
 }
 
 model Tech {
-  id      String @id @default(cuid())
-  name    String
-  key     String
-  stackId String
-  stacks  Stack  @relation(fields: [stackId], references: [id])
+    id      String @id @default(cuid())
+    name    String
+    key     String
+    stackId String
+    stacks  Stack  @relation(fields: [stackId], references: [id])
+
+    @@map("techs")
 }
 
 model GuestMessage {
-  id        String   @id @default(cuid())
-  github    String   @unique
-  message   String
-  createdAt DateTime @default(now())
+    id        String   @id @default(cuid())
+    github    String   @unique
+    message   String
+    createdAt DateTime @default(now())
 
-  @@map("guest_messages")
+    @@map("guest_messages")
 }
