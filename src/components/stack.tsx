@@ -2,12 +2,7 @@ import Image from 'next/image'
 import { HTMLAttributes } from 'react'
 
 interface StackProps {
-    tech: {
-        id: string
-        name: string
-        key: string
-        stackId: string
-    }
+    tech: { name: string, icon: string }
 }
 
 export default function Stack({ tech, ...props }: HTMLAttributes<HTMLDivElement> & StackProps) {
@@ -18,18 +13,18 @@ export default function Stack({ tech, ...props }: HTMLAttributes<HTMLDivElement>
         >
             <div className="relative flex w-fit items-center justify-center overflow-hidden rounded-lg p-2">
                 <Image
-                    src={`/techs/${tech.key || 'nextjs'}.svg`}
+                    src={`/techs/${tech.icon || 'nextjs'}.svg`}
                     className="z-10 bg-transparent "
                     width={24}
                     height={24}
-                    alt={`${tech.key}-icon`}
+                    alt={`${tech.icon}-icon`}
                 />
                 <Image
-                    src={`/techs/${tech.key || 'nextjs'}.svg`}
+                    src={`/techs/${tech.icon || 'nextjs'}.svg`}
                     className="absolute inset-0 z-0 size-[125%]  opacity-80 blur-lg"
                     width={24}
                     height={24}
-                    alt={`${tech.key}-icon`}
+                    alt={`${tech.icon}-icon`}
                 />
             </div>
             <p>{tech.name}</p>
