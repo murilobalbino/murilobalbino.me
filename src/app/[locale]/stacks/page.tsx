@@ -1,17 +1,16 @@
-
 import Stack from '@/components/stack'
 import stacks from '@/config/stacks'
 
 export default async function StacksPage() {
-    let techs: {
-        name: string,
-        icon: string,
+    const techs: {
+        name: string
+        icon: string
         stack: string
     }[] = []
     stacks.forEach((stack) => {
-        stack.techs.forEach(tech => {
+        stack.techs.forEach((tech) => {
             techs.push({ ...tech, stack: stack.href })
-        }) 
+        })
     })
     console.log(techs)
 

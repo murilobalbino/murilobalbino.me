@@ -2,7 +2,10 @@ import Image from 'next/image'
 import { HTMLAttributes } from 'react'
 
 interface StackProps {
-    tech: { name: string, icon: string }
+    tech: {
+        name: string
+        icon: string
+    }
 }
 
 export default function Stack({ tech, ...props }: HTMLAttributes<HTMLDivElement> & StackProps) {
