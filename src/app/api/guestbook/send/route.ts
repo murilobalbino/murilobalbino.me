@@ -22,7 +22,10 @@ export async function POST(request: Request) {
 
         return NextResponse.json({ ok: true, data: { github: user, message, name, createdAt: created.createdAt } })
     } catch (error) {
-        console.error('Error processing request:', error)
-        return NextResponse.error()
+        console.error('Error sending guest messages:', error)
+        return NextResponse.json({
+            ok: false,
+            error: 'Something went wrong.',
+        })
     }
 }
