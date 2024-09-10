@@ -1,22 +1,22 @@
+import { useMessage } from '@/contexts/messages.context'
 import { differenceBetweenDates } from '@/lib/math'
-import { useEffect, useState } from 'react'
+import { getAllMessage } from '@/service/guestbook'
+import { useEffect } from 'react'
 import Message from './message'
 
 export default function GuestsMessages() {
-    const [messages, setMessages] = useState([])
+    const { messages, setMessages } = useMessage()
 
     useEffect(() => {
-        fetch('/api/messages').then((data) => {
-            data.json().then((messages) => {
-                setMessages(messages)
-            })
+        getAllMessage().then((data) => {
+            setMessages(data.data)
         })
-    }, [])
+    }, [setMessages])
     return (
         <ul className="w-full">
             {messages.map((data: any, i: any) => {
                 const date = differenceBetweenDates(new Date().getTime(), new Date(data.createdAt).getTime())
-                return <Message data={data} date={date} key={data.id} />
+                return <Message data={data} date={date} key={data} />
             })}
         </ul>
     )

@@ -10,6 +10,7 @@ datasource db {
 model GuestMessage {
     id        String   @id @default(cuid())
     github    String   @unique
+    name      String 
     message   String
     createdAt DateTime @default(now())
 

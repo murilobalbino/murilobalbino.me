@@ -12,7 +12,6 @@ export default async function StacksPage() {
             techs.push({ ...tech, stack: stack.href })
         })
     })
-    console.log(techs)
 
     return (
         <div className="flex w-full flex-col gap-4">

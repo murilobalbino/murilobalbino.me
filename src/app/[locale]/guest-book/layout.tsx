@@ -1,10 +1,15 @@
-import { AuthContextProvider } from '@/contexts/auth.context'
-import { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-    title: 'Livro de Visitas - Murilo Balbino - Desenvolvedor Front-end',
-}
+import { AuthContextProvider } from '@/contexts/auth.context'
+import { MessageContextProvider } from '@/contexts/messages.context'
+import { SessionProvider } from 'next-auth/react'
 
 export default function GuestBookLayout({ children }: { children: React.ReactNode }) {
-    return <AuthContextProvider>{children}</AuthContextProvider>
+    return (
+        <SessionProvider>
+            <AuthContextProvider>
+                <MessageContextProvider>{children}</MessageContextProvider>
+            </AuthContextProvider>
+        </SessionProvider>
+    )
 }

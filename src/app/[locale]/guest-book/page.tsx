@@ -2,14 +2,20 @@
 import GuestsMessages from '@/components/guests-messages'
 import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/contexts/auth.context'
-import { sendMessage } from '@/lib/api/guestbook'
+import { useMessage } from '@/contexts/messages.context'
+
+import { getSessionMessage, sendMessage } from '@/service/guestbook'
 import { Github, Send } from 'lucide-react'
-import React, { useCallback } from 'react'
+import { useSession } from 'next-auth/react'
+import { useCallback, useEffect, useState } from 'react'
 
 export default function GuestBookPage() {
-    const [messageLength, setMessageLength] = React.useState(0)
-    const [message, setMessage] = React.useState('')
-    const { status, user, signIn, signOut } = useAuth()
+    const [messageLength, setMessageLength] = useState(0)
+    const [message, setMessage] = useState('')
+    const [inputDisabled, setInputDisabled] = useState(false)
+    const { signInGithub, signOutGitHub } = useAuth()
+    const { data: session, update } = useSession()
+    const { addMessages } = useMessage()
 
     const handleOnChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setMessage(e.currentTarget.value)
@@ -21,13 +27,21 @@ export default function GuestBookPage() {
             e.preventDefault()
             if (message.length === 0 || message.length > 250) return
 
-            if (!user || status !== 'authenticated') return
+            if (!session) return
 
-            const { state, params } = await sendMessage(message, user)
-            console.log(state, params)
+            const response = await sendMessage(message, session?.user.id, session?.user.name)
+            if (response.ok) {
+                addMessages({ ...response.data, date: new Date() })
+            }
         },
-        [message, user, status],
+        [message, session, addMessages],
     )
+
+    useEffect(() => {
+        const data = getSessionMessage(session?.user.id).then((data) => {
+            setInputDisabled(data ? data : false)
+        })
+    }, [session])
 
     return (
         <section className="flex w-full flex-col gap-4">
@@ -46,16 +60,17 @@ export default function GuestBookPage() {
             <div className="flex justify-between gap-2">
                 <p className="flex-1 text-sm text-muted-foreground">{messageLength}/250</p>
 
-                {user ? (
+                {session?.user ? (
                     <>
                         <button
                             className="flex items-center gap-2 rounded-sm border border-muted bg-transparent px-4 py-2 text-sm font-semibold text-zinc-500 transition-colors duration-300 hover:text-zinc-300 focus:text-zinc-300"
-                            onClick={signOut}
+                            onClick={signOutGitHub}
                         >
                             <Github className="size-5" /> Deslogar
                         </button>
                         <button
-                            className="flex items-center gap-2 rounded-sm border border-muted bg-transparent px-4 py-2 text-sm font-semibold text-zinc-300 transition-colors duration-300 hover:border-blue-600 hover:text-zinc-200 focus:border-blue-600 focus:text-zinc-200"
+                            data-disabled={inputDisabled}
+                            className="flex items-center gap-2 rounded-sm border border-muted bg-transparent px-4 py-2 text-sm font-semibold text-zinc-300 transition-colors duration-300 hover:border-blue-600 hover:text-zinc-200 focus:border-blue-600 focus:text-zinc-200 data-[disabled=true]:pointer-events-none data-[disabled=true]:text-zinc-500 data-[disabled=true]:opacity-50"
                             onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleSendMessage(e)}
                         >
                             <Send className="size-5" /> Enviar
@@ -64,7 +79,7 @@ export default function GuestBookPage() {
                 ) : (
                     <button
                         className="flex items-center gap-2 rounded-sm border border-muted bg-transparent px-4 py-2 text-sm font-semibold text-zinc-500 transition-colors duration-300 hover:text-zinc-300 focus:text-zinc-300"
-                        onClick={signIn}
+                        onClick={signInGithub}
                     >
                         <Github className="size-5" /> Faça login para deixar uma mensagem
                     </button>
